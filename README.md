@@ -47,7 +47,7 @@ Windows 自带的照片应用打开大目录会卡死，Lightroom 那类工具�
 想自己改代码：
 
 ```bash
-git clone https://github.com/<你的用户名>/photo-drawer.git
+git clone https://github.com/y2302995057-arch/photo-drawer.git
 cd photo-drawer
 npm install          # 只有一个依赖：sharp
 node server.mjs
