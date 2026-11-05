@@ -1,0 +1,397 @@
+/* 系列卡片 — 白色大圆角卡：大图在上 / 粗体名字+徽章 / 灰色描述 / 底部统计与胶囊按钮。
+   参考用户给的第二张图；深色相框、全息箔那套已整体去掉。
+   手机端两卡并列。背景用全站 soft-bg.css 的淡青蓝 → 纯白。 */
+:root {
+  /* 页面级（浅色背景上） */
+  --page-ink: #1d3038;
+  --page-ink-2: #55707c;
+  --page-ink-3: #8299a3;
+  --page-line: rgba(28, 76, 100, .16);
+  --ease: cubic-bezier(.22,1,.36,1);
+
+  /* nav.css 里的导航组件用这几个变量，跟本页的蓝灰调对齐 */
+  --text: var(--page-ink);
+  --text-2: var(--page-ink-2);
+  --accent: #2d7caa;
+  --ease-out: var(--ease);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  min-height: 100vh;
+  color: var(--page-ink);
+  font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+button, input { font: inherit; }
+.hidden { display: none !important; }
+
+/* ===== 背景：极淡的珠光光斑，缓慢漂移 ===== */
+.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.orb { position: absolute; display: block; border-radius: 50%; filter: blur(110px); opacity: .38; }
+.orb-a { width: 46vw; height: 46vw; left: -12vw; top: -14vw; background: #9bd4ea; animation: driftA 32s ease-in-out infinite alternate; }
+.orb-b { width: 40vw; height: 40vw; right: -10vw; top: 8vh; background: #c3d8f2; opacity: .32; animation: driftB 38s ease-in-out infinite alternate; }
+.orb-c { width: 44vw; height: 44vw; left: 32vw; bottom: -24vw; background: #f7dce9; opacity: .26; animation: driftC 44s ease-in-out infinite alternate; }
+@keyframes driftA { to { transform: translate(9vw, 8vh) scale(1.12); } }
+@keyframes driftB { to { transform: translate(-10vw, 12vh) scale(1.08); } }
+@keyframes driftC { to { transform: translate(6vw, -10vh) scale(1.15); } }
+
+/* ===== 顶栏 ===== */
+.top { position: relative; z-index: 3; padding: 26px 28px 0; max-width: 1440px; margin: 0 auto; }
+.top-inner { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 14px; margin-right: auto; }
+.brand-mark {
+  width: 42px; height: 42px; border-radius: 13px; flex: none;
+  display: flex; align-items: center; justify-content: center; gap: 3px;
+  background: linear-gradient(145deg, rgba(255,255,255,.85), rgba(190,226,240,.65));
+  border: 1px solid rgba(255,255,255,.9);
+  box-shadow: inset 0 1px 0 #fff, 0 8px 22px rgba(52, 116, 150, .14);
+}
+.brand-mark i { width: 4px; border-radius: 3px; background: linear-gradient(#2c7fb5, #6aa9d8); display: block; }
+.brand-mark i:nth-child(1) { height: 11px; opacity: .6; }
+.brand-mark i:nth-child(2) { height: 20px; }
+.brand-mark i:nth-child(3) { height: 14px; opacity: .8; }
+.brand-copy h1 { font-size: 21px; font-weight: 700; letter-spacing: .4px; color: var(--page-ink); }
+.brand-copy h1 span { font-weight: 400; color: var(--page-ink-2); }
+.brand-copy p { font-size: 12px; color: var(--page-ink-3); margin-top: 4px; }
+.brand-copy code { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; color: #2c7aa5; }
+
+.top-actions { display: flex; align-items: center; gap: 10px; }
+.filter {
+  display: flex; align-items: center; gap: 8px;
+  height: 38px; padding: 0 13px; border-radius: 11px;
+  background: rgba(255,255,255,.62); border: 1px solid var(--page-line);
+  transition: border-color .25s, box-shadow .25s, background .25s;
+}
+.filter:focus-within { border-color: rgba(45,124,170,.55); box-shadow: 0 0 0 3px rgba(45,124,170,.12); background: rgba(255,255,255,.85); }
+.filter svg { width: 15px; height: 15px; fill: none; stroke: var(--page-ink-3); stroke-width: 1.8; stroke-linecap: round; }
+.filter input { width: 150px; border: 0; outline: 0; background: transparent; color: var(--page-ink); font-size: 13px; }
+.filter input::placeholder { color: var(--page-ink-3); }
+.back {
+  display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 15px;
+  border-radius: 11px; border: 1px solid var(--page-line); color: var(--page-ink-2);
+  text-decoration: none; font-size: 13px; white-space: nowrap;
+  background: rgba(255,255,255,.62); transition: .25s var(--ease);
+}
+.back span { transition: transform .25s var(--ease); }
+.back:hover { color: var(--page-ink); border-color: rgba(28,76,100,.34); background: #fff; transform: translateY(-2px); }
+.back:hover span { transform: translate(2px, -2px); }
+
+/* 导航栏：样式来自 nav.css（和看图页同一套），这里只调本页的排布与配色 */
+.crumbs {
+  max-width: none;
+  margin: 20px 0 4px;
+  padding: 0;
+  gap: 10px;
+  flex-wrap: nowrap;
+  min-height: 34px;
+}
+.crumb-dot {
+  width: 6px; height: 6px; border-radius: 50%; flex: 0 0 auto;
+  background: #4a9fc9; box-shadow: 0 0 8px rgba(74,159,201,.6);
+}
+.crumb-home.has-dot { gap: 7px; }
+.crumb-home.is-root { cursor: default; opacity: .92; }
+.crumb-home.is-root:hover { transform: none; border-color: rgba(10,132,255,.28); background: linear-gradient(135deg, rgba(10,132,255,.10), rgba(94,92,230,.10)); }
+
+/* ===== 内容区 ===== */
+main { position: relative; z-index: 2; max-width: 1440px; margin: 0 auto; padding: 10px 28px 60px; }
+.meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 10px 0 22px; }
+.meta-line { font-size: 12px; color: var(--page-ink-3); letter-spacing: .02em; }
+.meta-right { font-variant-numeric: tabular-nums; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px 26px; }
+/* 瀑布流模式：同一个 #grid 容器换成块级，里面放 .section */
+.grid.is-flow { display: block; }
+
+/* ===== 卡片：白色大圆角卡 ===== */
+.pc {
+  position: relative; cursor: pointer; outline: none;
+  opacity: 0; animation: rise .72s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 55ms);
+}
+@keyframes rise { from { opacity: 0; transform: translateY(20px) scale(.98); } to { opacity: 1; transform: none; } }
+
+.pc-card {
+  position: relative; padding: 12px; border-radius: var(--card-radius, 30px);
+  background: var(--card-bg, #fff);
+  border: var(--card-border-w, 1px) solid var(--card-border, rgba(255,255,255,.95));
+  box-shadow: var(--card-shadow);
+  backdrop-filter: var(--card-blur, none);
+  -webkit-backdrop-filter: var(--card-blur, none);
+  transition: transform .45s var(--ease), box-shadow .45s var(--ease), background .35s, border-color .35s;
+}
+/* 只有固定的 hover 位移，没有任何随鼠标位置的倾斜/晃动 */
+.pc:hover .pc-card, .pc:focus-visible .pc-card {
+  transform: translateY(-6px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.pc-media {
+  position: relative; aspect-ratio: 4 / 5; border-radius: 22px; overflow: hidden;
+  background: var(--media-bg);
+}
+.pc-media img {
+  width: 100%; height: 100%; display: block; object-fit: cover;
+  object-position: center 28%; /* 人像构图，优先保住上半部的脸 */
+  transform: scale(1.001); transition: transform .8s var(--ease), opacity .4s;
+}
+.pc:hover .pc-media img { transform: scale(1.045); }
+.pc.no-cover .pc-media img { opacity: 0; }
+.pc-fallback { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: rgba(40,80,105,.28); }
+.pc.no-cover .pc-fallback { display: flex; }
+.pc-fallback svg { width: 58px; height: 58px; fill: none; stroke: currentColor; stroke-width: 1.1; }
+
+/* =========================================================
+   玻璃主题：图片铺满整卡，信息压在底部磨砂层上
+   磨砂层用 backdrop-filter 模糊背后的照片，
+   再用 mask 做「从底部往上渐隐」——对应设计稿的 Progressive blur
+   （start 1 → end 34），所以只有下半部分是模糊的。
+   ========================================================= */
+.pc-glass { display: none; }
+
+html[data-card="glass"] .pc-card {
+  aspect-ratio: 3 / 4.2;
+  padding: 0;
+  overflow: hidden;
+  /* 5px 的浅色边框由 theme.css 的 --card-border-w 给，图片嵌在边框内侧 */
+  box-shadow: var(--card-shadow), 0 18px 40px rgba(24, 52, 80, .16);
+}
+html[data-card="glass"] .pc-media {
+  position: absolute; inset: 0;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+html[data-card="glass"] .pc-media img { object-position: center 26%; border-radius: 0; }
+
+html[data-card="glass"] .pc-glass {
+  display: block;
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 58%;
+  z-index: 1;
+  pointer-events: none;
+  backdrop-filter: blur(26px) saturate(1.05);
+  -webkit-backdrop-filter: blur(26px) saturate(1.05);
+  /* 白雾和模糊同步衰减，避免顶上出现一道硬边 */
+  background: linear-gradient(to top,
+    rgba(255, 255, 255, .50) 0%,
+    rgba(255, 255, 255, .34) 38%,
+    rgba(255, 255, 255, .12) 68%,
+    rgba(255, 255, 255, .02) 88%,
+    rgba(255, 255, 255, 0) 100%);
+  -webkit-mask-image: linear-gradient(to top,
+    #000 0%, #000 34%, rgba(0, 0, 0, .72) 58%,
+    rgba(0, 0, 0, .28) 80%, transparent 100%);
+  mask-image: linear-gradient(to top,
+    #000 0%, #000 34%, rgba(0, 0, 0, .72) 58%,
+    rgba(0, 0, 0, .28) 80%, transparent 100%);
+}
+
+html[data-card="glass"] .pc-body {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  padding: 16px 20px 20px;
+}
+html[data-card="glass"] .pc-name { font-size: 30px; letter-spacing: -.8px; }
+html[data-card="glass"] .pc-desc {
+  margin-top: 10px; min-height: 0;
+  color: #5b636e;
+}
+html[data-card="glass"] .pc-foot { margin-top: 14px; padding-bottom: 0; }
+
+/* 磨砂层上的按钮用白底，比透明描边清楚 */
+html[data-card="glass"] .pc-follow {
+  background: rgba(255, 255, 255, .72);
+  border-color: rgba(255, 255, 255, .85);
+  box-shadow: 0 2px 10px rgba(20, 40, 60, .10);
+}
+
+@media (max-width: 760px) {
+  html[data-card="glass"] .pc-card { aspect-ratio: 3 / 4.9; }
+  html[data-card="glass"] .pc-body { padding: 10px 11px 12px; }
+  html[data-card="glass"] .pc-name { font-size: 16px; letter-spacing: -.3px; }
+  html[data-card="glass"] .pc-desc { margin-top: 6px; }
+  html[data-card="glass"] .pc-foot { margin-top: 9px; gap: 6px; }
+  html[data-card="glass"] .pc-glass { height: 68%; }
+
+  /* 两列卡片太窄：按钮收窄，别压住统计数字 */
+  html[data-card="glass"] .pc-follow {
+    height: 26px;
+    padding: 0 14px;
+    font-size: 10px;
+    gap: 1px;
+  }
+  html[data-card="glass"] .pc-follow .fb-text { transform: translateX(-2px); }
+  html[data-card="glass"] .pc-follow:hover .fb-text,
+  html[data-card="glass"] .pc-follow:focus-visible .fb-text { transform: translateX(2px); }
+  html[data-card="glass"] .pc-follow .fb-arrow { width: 10px; height: 10px; }
+  html[data-card="glass"] .pc-follow .fb-arrow-right { right: 6px; }
+  html[data-card="glass"] .pc-follow:hover .fb-arrow-left,
+  html[data-card="glass"] .pc-follow:focus-visible .fb-arrow-left { left: 5px; }
+  html[data-card="glass"] .pc-stats { gap: 7px; }
+}
+
+.pc-body { padding: 20px 10px 6px; }
+.pc-title-row { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.pc-name {
+  font-size: 27px; font-weight: 800; letter-spacing: -.6px; line-height: 1.2;
+  color: #14181c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.pc-verified {
+  width: 24px; height: 24px; flex: none; display: grid; place-items: center;
+  background: linear-gradient(135deg, #5be68f, #2fc46e);
+  border-radius: 42% 58% 46% 54% / 52% 44% 56% 48%;
+  box-shadow: 0 3px 10px rgba(60, 200, 120, .32);
+}
+.pc-verified svg { width: 15px; height: 15px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+.pc-desc {
+  margin-top: 13px; font-size: 14px; line-height: 1.65; color: #8b939c;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  min-height: 2.9em;
+}
+
+.pc-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 18px; padding-bottom: 6px; }
+.pc-stats { display: flex; align-items: center; gap: 17px; min-width: 0; }
+.pc-stat { display: inline-flex; align-items: center; gap: 6px; color: #2c323a; font-size: 13px; white-space: nowrap; }
+.pc-stat svg { width: 17px; height: 17px; flex: none; fill: none; stroke: #7b848e; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.pc-stat b { font-size: 15px; font-weight: 700; }
+/* ===== 查看按钮：Flow Button（hover 时黑色圆从中心扩散、箭头左右换位） ===== */
+.pc-follow {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 40px;
+  padding: 0 30px;
+  border: 1.5px solid rgba(51, 51, 51, .42);
+  border-radius: 100px;
+  background: transparent;
+  color: #111;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color .6s cubic-bezier(.23, 1, .32, 1),
+    color .6s cubic-bezier(.23, 1, .32, 1),
+    border-radius .6s cubic-bezier(.23, 1, .32, 1),
+    transform .3s cubic-bezier(.23, 1, .32, 1);
+}
+.pc-follow:active { transform: scale(.95); }
+.pc-follow:focus-visible { outline: 2px solid rgba(10,132,255,.55); outline-offset: 3px; }
+
+.pc-follow .fb-text {
+  position: relative;
+  z-index: 1;
+  transform: translateX(-10px);
+  transition: transform .8s ease-out;
+}
+
+.pc-follow .fb-arrow {
+  position: absolute;
+  width: 15px; height: 15px;
+  z-index: 9;
+  fill: none;
+  stroke: #111;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition:
+    left .8s cubic-bezier(.34, 1.56, .64, 1),
+    right .8s cubic-bezier(.34, 1.56, .64, 1),
+    stroke .6s,
+    opacity .5s;
+}
+.pc-follow .fb-arrow-left { left: -30%; opacity: 0; }
+.pc-follow .fb-arrow-right { right: 15px; opacity: 1; }
+
+/* 从中心扩散的黑色圆，盖住整个按钮 */
+.pc-follow .fb-circle {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #111;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition:
+    width .8s cubic-bezier(.19, 1, .22, 1),
+    height .8s cubic-bezier(.19, 1, .22, 1),
+    opacity .6s;
+}
+
+.pc-follow:hover,
+.pc-follow:focus-visible {
+  border-color: transparent;
+  color: #fff;
+  border-radius: 12px;
+}
+.pc-follow:hover .fb-text,
+.pc-follow:focus-visible .fb-text { transform: translateX(10px); }
+.pc-follow:hover .fb-circle,
+.pc-follow:focus-visible .fb-circle { width: 190px; height: 190px; opacity: 1; }
+.pc-follow:hover .fb-arrow,
+.pc-follow:focus-visible .fb-arrow { stroke: #fff; }
+.pc-follow:hover .fb-arrow-left,
+.pc-follow:focus-visible .fb-arrow-left { left: 15px; opacity: 1; }
+.pc-follow:hover .fb-arrow-right,
+.pc-follow:focus-visible .fb-arrow-right { right: -30%; opacity: 0; }
+
+.empty { padding: 90px 0; text-align: center; color: var(--page-ink-3); }
+.empty-icon { display: block; font-size: 38px; opacity: .5; margin-bottom: 12px; }
+.foot { position: relative; z-index: 2; text-align: center; padding: 0 20px 36px; font-size: 11.5px; color: rgba(28,76,100,.38); }
+
+/* ===== 手机端：两卡并列，信息不缩水太多 ===== */
+@media (hover: none) {
+  .pc:hover .pc-card { transform: none; }
+  .pc:hover .pc-media img { transform: scale(1.001); }
+}
+@media (max-width: 760px) {
+  .top { padding: 18px 14px 0; }
+  .top-inner { gap: 12px; }
+  .brand-copy h1 { font-size: 18px; }
+  .brand-copy p { font-size: 10.5px; }
+  .top-actions { width: 100%; }
+  .filter { flex: 1; }
+  .filter input { width: 100%; }
+  main { padding: 8px 14px 44px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .pc-card { border-radius: 20px; padding: 7px; box-shadow: 0 8px 22px rgba(30,70,95,.10); }
+  .pc-media { border-radius: 15px; aspect-ratio: 3 / 4; }
+  .pc-body { padding: 12px 5px 3px; }
+  .pc-title-row { gap: 5px; }
+  .pc-name { font-size: 15px; letter-spacing: -.2px; }
+  .pc-verified { width: 15px; height: 15px; }
+  .pc-verified svg { width: 10px; height: 10px; stroke-width: 3.4; }
+  .pc-desc { margin-top: 7px; font-size: 10.5px; line-height: 1.5; min-height: 3em; }
+  .pc-foot { margin-top: 10px; gap: 4px; padding-bottom: 2px; }
+  .pc-stats { gap: 8px; }
+  .pc-stat { gap: 3px; font-size: 10px; }
+  .pc-stat svg { width: 12px; height: 12px; }
+  .pc-stat b { font-size: 11px; }
+  .pc-follow { height: 31px; padding: 0 22px; font-size: 11px; border-width: 1px; }
+  .pc-follow .fb-arrow { width: 12px; height: 12px; }
+  .pc-follow .fb-arrow-right { right: 10px; }
+  .pc-follow:hover .fb-arrow-left { left: 9px; }
+  .pc-follow .fb-text { transform: translateX(-6px); }
+  .pc-follow:hover .fb-text { transform: translateX(6px); }
+  .pc-follow:hover .fb-circle { width: 150px; height: 150px; }
+}
+@media (max-width: 360px) {
+  .pc-stats .pc-stat:nth-child(2) { display: none; }
+  .pc-name { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .orb { animation: none; }
+  .pc { animation: none; opacity: 1; }
+  .pc-card, .pc-media img { transition: none; }
+  .pc:hover .pc-card { transform: none; }
+  .pc:hover .pc-media img { transform: none; }
+  .pc-follow, .pc-follow .fb-text, .pc-follow .fb-arrow, .pc-follow .fb-circle { transition: none; }
+}

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>进入 · 抽屉</title>
+<script>fetch('/api/meta').then(r=>r.json()).then(m=>{if(m&&m.name)document.title='进入 · '+m.name;}).catch(()=>{});</script>
+<link rel="stylesheet" href="/auth.css">
+</head>
+<body>
+<div id="login-page">
+
+  <!-- ============ 左：动画角色 ============ -->
+  <section class="left-panel">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+        <rect x="2.5" y="5.5" width="19" height="14" rx="3.2"/>
+        <circle cx="12" cy="12.5" r="3.6"/>
+        <path d="M8.2 5.5l1.1-2.2h5.4l1.1 2.2"/>
+      </svg>
+      <span id="brandName">抽屉</span>
+    </div>
+
+    <div class="characters-wrapper">
+      <div class="ac-scene" id="acScene" aria-hidden="true"></div>
+    </div>
+
+    <div class="footer-links">
+<span title="删掉程序目录里的 config.json，重启后就能重新设置">忘记密码？删掉 config.json 再启动</span>
+    </div>
+  </section>
+
+  <!-- ============ 右：表单 ============ -->
+  <section class="right-panel">
+    <div class="form-container">
+      <div class="sparkle-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L13.5 9H10.5L12 2Z" fill="#1a1a2e"/>
+          <path d="M12 22L10.5 15H13.5L12 22Z" fill="#1a1a2e"/>
+          <path d="M2 12L9 10.5V13.5L2 12Z" fill="#1a1a2e"/>
+          <path d="M22 12L15 13.5V10.5L22 12Z" fill="#1a1a2e"/>
+        </svg>
+      </div>
+
+      <div class="form-header">
+        <h1 id="formTitle">欢迎回来</h1>
+      </div>
+
+      <form id="authForm" autocomplete="off" novalidate>
+
+        <!-- ---------- 首次：第 1 步，设密码 ---------- -->
+        <div class="step" id="stepPass" hidden>
+          <div class="form-group">
+            <label for="p1">设置密码</label>
+            <div class="input-wrapper">
+              <input id="p1" type="password" placeholder="至少 4 位" autocomplete="new-password" spellcheck="false">
+              <button type="button" class="toggle-password" data-eye="p1" aria-label="显示密码">
+                <svg class="ic-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg class="ic-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <path d="M17.9 17.9A10 10 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A9.1 9.1 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.2 3.2m-6.7-1.1a3 3 0 1 1-4.2-4.2"/>
+                  <line x1="2" y1="2" x2="22" y2="22"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="p2">确认密码</label>
+            <div class="input-wrapper">
+              <input id="p2" type="password" placeholder="再输一次，两遍要一样" autocomplete="new-password" spellcheck="false">
+              <button type="button" class="toggle-password" data-eye="p2" aria-label="显示密码">
+                <svg class="ic-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg class="ic-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <path d="M17.9 17.9A10 10 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A9.1 9.1 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.2 3.2m-6.7-1.1a3 3 0 1 1-4.2-4.2"/>
+                  <line x1="2" y1="2" x2="22" y2="22"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- 首次：第 2 步，选照片文件夹 ---------- -->
+        <div class="step" id="stepDir" hidden>
+          <div class="pass-done">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12.5l4.2 4.2L19 7"/></svg>
+            密码已设置
+          </div>
+
+          <div class="dir-options" id="dirOptions">
+            <div class="dir-opt is-on" data-mode="default" role="button" tabindex="0">
+              <span class="do-dot"></span>
+              <span class="do-body">
+                <span class="do-title">用程序自带的文件夹</span>
+                <span class="do-desc do-path" id="defaultDirText">我的照片</span>
+              </span>
+            </div>
+
+            <div class="dir-opt" data-mode="pick" role="button" tabindex="0">
+              <span class="do-dot"></span>
+              <span class="do-body">
+                <span class="do-title">选电脑里已有的文件夹</span>
+                <span class="do-desc do-path" id="pickedDirText">点这一项，会弹出系统选择框</span>
+              </span>
+            </div>
+
+            <div class="dir-opt" data-mode="manual" role="button" tabindex="0">
+              <span class="do-dot"></span>
+              <span class="do-body">
+                <span class="do-title">手动输入路径</span>
+                <input type="text" id="manualDir" class="manual-input" placeholder="例如 D:\照片" spellcheck="false">
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- 日常登录 ---------- -->
+        <div class="step" id="stepLogin" hidden>
+          <div class="form-group">
+            <label for="p0">密码</label>
+            <div class="input-wrapper">
+              <input id="p0" type="password" placeholder="输入密码" autocomplete="current-password">
+              <button type="button" class="toggle-password" data-eye="p0" aria-label="显示密码">
+                <svg class="ic-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg class="ic-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <path d="M17.9 17.9A10 10 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A9.1 9.1 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.2 3.2m-6.7-1.1a3 3 0 1 1-4.2-4.2"/>
+                  <line x1="2" y1="2" x2="22" y2="22"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="error-msg" id="errMsg" role="alert"></div>
+        <div class="ok-msg" id="okMsg" role="status"></div>
+
+        <button type="submit" class="btn-login" id="submitBtn">
+          <span class="btn-text" id="btnText">进入</span>
+          <span class="btn-hover-content">
+            <span id="btnText2">进入</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </span>
+        </button>
+      </form>
+
+      <div class="step-bar" id="stepBar" hidden>
+        <span class="sb-item is-on" data-step="0">设置密码</span>
+        <span class="sb-line"></span>
+        <span class="sb-item" data-step="1">选择文件夹</span>
+      </div>
+
+      <button type="button" class="link-back" id="backStep" hidden>← 上一步</button>
+
+    </div>
+  </section>
+
+</div>
+<script src="/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#e7f6f9">
+<title>抽屉</title>
+<script>fetch('/api/meta').then(r=>r.json()).then(m=>{if(m&&m.name)document.title=m.name;}).catch(()=>{});</script>
+<link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/nav.css">
+<link rel="stylesheet" href="/masonry.css">
+<link rel="stylesheet" href="/series.css">
+<link rel="stylesheet" href="/soft-bg.css">
+<link rel="stylesheet" href="/settings.css">
+<script src="/prefs.js"></script>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <span class="orb orb-a"></span>
+  <span class="orb orb-b"></span>
+  <span class="orb orb-c"></span>
+</div>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <div class="brand-copy">
+        <h1 id="brandName">抽屉</h1>
+      </div>
+    </div>
+    <div class="top-actions">
+      <label class="filter">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <input id="q" type="search" placeholder="筛选系列…" autocomplete="off" aria-label="筛选系列">
+      </label>
+    </div>
+  </div>
+  <nav class="crumbs" id="crumbs" aria-label="目录层级"></nav>
+</header>
+
+<main>
+  <div class="meta">
+    <span class="meta-line" id="metaLeft">正在读取目录…</span>
+    <span class="meta-line meta-right" id="metaRight"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="empty hidden" id="empty">
+    <span class="empty-icon" aria-hidden="true">◇</span>
+    <p>这一层没有子文件夹</p>
+  </div>
+</main>
+
+<footer class="foot" id="foot"></footer>
+
+<script src="/masonry.js"></script>
+<script src="/nav.js"></script>
+<script src="/settings.js"></script>
+<script src="/series.js"></script>
+</body>
+</html>

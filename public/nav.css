@@ -1,0 +1,328 @@
+/* =========================================================
+   全局导航：左上角「目录」按钮 + 抽屉目录树 + 路径分段
+   首页（系列卡片）和看图页共用这一份，别再各写一套。
+   颜色变量由各页覆盖：看图页用 view.css 的 :root，
+   卡片页在 series.css 里换成它自己的蓝灰色。
+   ========================================================= */
+:root {
+  --text: #1d1d1f;
+  --text-2: #6e6e73;
+  --accent: #0a84ff;
+  --tb-h: 96px;
+  --panel-w: clamp(280px, 30vw, 380px);
+  --tree-line: rgba(0, 0, 0, .16);
+  --tree-line-strong: rgba(0, 0, 0, .28);
+  --tree-row: 34px;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* ===== 左上角折叠菜单按钮（Staggered Menu 的 toggle）===== */
+.menu-toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px 8px 12px;
+  border: 1px solid rgba(0,0,0,.1); border-radius: 10px;
+  background: var(--surface); color: var(--text);
+  font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+}
+.menu-toggle:hover { border-color: rgba(0,0,0,.22); box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+.menu-toggle:focus-visible { outline: 2px solid rgba(10,132,255,.55); outline-offset: 2px; }
+.mt-icon {
+  position: relative; width: 14px; height: 14px; flex: 0 0 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  will-change: transform;
+}
+.mt-icon-line {
+  position: absolute; left: 50%; top: 50%;
+  width: 100%; height: 2px; border-radius: 2px;
+  background: currentColor; transform: translate(-50%, -50%);
+}
+.mt-icon-line-v { transform: translate(-50%, -50%) rotate(90deg); }
+.mt-textWrap { position: relative; display: inline-block; height: 1em; overflow: hidden; }
+.mt-textInner { display: flex; flex-direction: column; line-height: 1; will-change: transform; }
+.mt-line { display: block; height: 1em; line-height: 1; white-space: nowrap; }
+
+/* ===== 导航栏：返回 + 橡皮筋分段（rubber segment）===== */
+.crumbs {
+  max-width: 1400px; margin: 0 auto; padding: 0 24px 9px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--text-2);
+  overflow-x: auto; scrollbar-width: none;
+  position: relative;
+}
+.crumbs::-webkit-scrollbar { display: none; }
+
+/* 左：回卡片页。始终可见，是「上一级」的终点 */
+.crumb-home {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center;
+  height: 32px; padding: 0 13px;
+  border: 1px solid rgba(10,132,255,.28); border-radius: 10px;
+  background: linear-gradient(135deg, rgba(10,132,255,.10), rgba(94,92,230,.10));
+  color: #0a6ed1; font: inherit; font-size: 13px; font-weight: 600;
+  white-space: nowrap; cursor: pointer;
+  transition: transform .25s var(--ease-out), background .25s, border-color .25s;
+}
+.crumb-home:hover {
+  transform: translateY(-1px);
+  border-color: rgba(10,132,255,.55);
+  background: rgba(10,132,255,.18);
+}
+.crumb-home:focus-visible { outline: 2px solid rgba(10,132,255,.55); outline-offset: 2px; }
+
+/* 右：路径分段。白色选中块切换时先横向拉长、再弹回目标段（view.js 的 layoutSegThumb） */
+.seg {
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(18, 22, 38, .09);
+}
+.seg-thumb {
+  position: absolute;
+  top: 4px; left: 0;
+  height: calc(100% - 8px);
+  width: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(16,20,32,.10), 0 2px 8px rgba(16,20,32,.07);
+  pointer-events: none;
+  will-change: left, width;
+}
+.seg-item {
+  position: relative; z-index: 1;
+  border: 0; background: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font: inherit; font-size: 12.5px; font-weight: 500;
+  color: var(--text-2);
+  white-space: nowrap; cursor: pointer;
+  transition: color .22s;
+}
+.seg-item:hover { color: var(--text); }
+.seg-item.is-current { color: var(--text); font-weight: 600; cursor: default; }
+
+@media (max-width: 640px) {
+  .crumbs { gap: 8px; }
+  .crumb-home { height: 30px; padding: 0 10px; font-size: 12px; }
+  .seg-item { padding: 5px 10px; font-size: 11.5px; }
+}
+
+/* ===== 抽屉：prelayers + 面板 ===== */
+.menu-prelayers {
+  position: fixed; top: var(--tb-h); left: 0; bottom: 0;
+  width: var(--panel-w); z-index: 60; pointer-events: none; overflow: hidden;
+}
+.menu-prelayer {
+  position: absolute; inset: 0;
+  transform: translateX(-100%); opacity: 0; will-change: transform;
+}
+.menu-prelayer:nth-child(1) { background: #cfe0ff; }
+.menu-prelayer:nth-child(2) { background: #e7eefb; }
+
+.menu-scrim {
+  position: fixed; top: var(--tb-h); left: 0; right: 0; bottom: 0;
+  z-index: 55; background: rgba(12,12,14,.34);
+  opacity: 0; pointer-events: none; transition: opacity .3s ease;
+}
+/* 桌面端不压暗照片墙（抽屉自带阴影），窄屏才需要遮罩 */
+@media (min-width: 901px) {
+  .menu-scrim { display: none; }
+}
+
+.menu-panel {
+  position: fixed; top: var(--tb-h); left: 0; bottom: 0;
+  width: var(--panel-w); z-index: 65;
+  background: #fff; border-right: 1px solid rgba(0,0,0,.07);
+  box-shadow: 18px 0 48px rgba(0,0,0,.14);
+  transform: translateX(-101%); opacity: 0; will-change: transform;
+  display: flex; flex-direction: column;
+}
+.menu-panel-inner {
+  flex: 1; min-height: 0; display: flex; flex-direction: column;
+  padding: 18px 14px 14px 16px; overflow: hidden;
+}
+.menu-panel-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  padding: 0 6px 12px 2px; border-bottom: 1px solid rgba(0,0,0,.07);
+}
+.mph-title { font-size: 15px; font-weight: 650; letter-spacing: .3px; }
+.mph-meta { font-size: 11.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+.tree {
+  flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
+  padding: 12px 4px 8px 2px;
+  scrollbar-width: thin;
+}
+.tree::-webkit-scrollbar { width: 6px; }
+.tree::-webkit-scrollbar-thumb { background: rgba(0,0,0,.16); border-radius: 3px; }
+
+.menu-panel-foot {
+  padding: 10px 6px 2px; border-top: 1px solid rgba(0,0,0,.07);
+  font-size: 11.5px; color: var(--text-2); line-height: 1.5;
+  display: flex; align-items: center; gap: 6px;
+  overflow-wrap: anywhere;
+}
+.mf-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: 0 0 6px;
+}
+
+/* ===== 目录树（Branched Menu 的分支线条）===== */
+/* 目录抽屉里的返回入口：看图页的「上一级」终点 */
+.tree-home {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; height: 38px; margin-bottom: 8px;
+  padding: 0 10px 0 2px;
+  border: 0; border-radius: 8px;
+  background: rgba(10,132,255,.10);
+  font: inherit; font-size: 14.5px; font-weight: 600; color: #0a6ed1;
+  text-align: left; cursor: pointer;
+  opacity: 0; will-change: transform;
+  transition: background .18s;
+}
+.tree-home:hover { background: rgba(10,132,255,.20); }
+.th-arrow { flex: 0 0 auto; width: 18px; font-size: 16px; line-height: 1; }
+
+.tree-all {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; height: 38px; margin-bottom: 6px;
+  padding: 0 10px 0 2px;
+  border: 0; border-radius: 8px; background: none;
+  font: inherit; font-size: 14.5px; font-weight: 600; color: var(--text);
+  text-align: left; cursor: pointer;
+  opacity: 0; will-change: transform;
+  transition: background .18s;
+}
+.tree-all:hover { background: rgba(0,0,0,.045); }
+.tree-all[data-active] { background: rgba(10,132,255,.1); }
+.ta-label { flex: 1; min-width: 0; }
+.ta-count, .th-count, .tn-count {
+  font-size: 11.5px; color: var(--text-2); font-variant-numeric: tabular-nums;
+  padding: 1px 7px; border-radius: 999px; background: rgba(0,0,0,.055);
+}
+.tree-all[data-active] .ta-count { background: rgba(10,132,255,.16); color: var(--accent); }
+
+.tree-section { display: flex; flex-direction: column; }
+
+.tree-head {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; height: 38px; padding: 0 10px 0 2px;
+  border: 0; border-radius: 8px; background: none;
+  font: inherit; font-size: 14.5px; font-weight: 600; color: var(--text);
+  text-align: left; cursor: pointer;
+  opacity: 0; will-change: transform;
+  transition: background .18s, color .18s;
+}
+.tree-head:hover { background: rgba(0,0,0,.045); }
+.tree-section[data-has-active] > .tree-head { color: var(--accent); }
+.tree-section[data-has-active] > .tree-head .th-count { background: rgba(10,132,255,.16); color: var(--accent); }
+.th-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.th-chev {
+  flex: 0 0 14px; width: 14px; height: 14px; position: relative;
+  border-radius: 4px;
+}
+.th-chev::before {
+  content: ''; position: absolute; left: 3px; top: 3px;
+  width: 6px; height: 6px;
+  border-right: 1.6px solid currentColor; border-bottom: 1.6px solid currentColor;
+  transform: rotate(-45deg); transform-origin: 60% 60%;
+  transition: transform .28s var(--ease-out);
+}
+.tree-section[data-open] > .tree-head .th-chev::before { transform: rotate(45deg); }
+
+/* 折叠：grid-template-rows 0fr → 1fr */
+.tree-body {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows .34s var(--ease-out);
+}
+.tree-section[data-open] > .tree-body { grid-template-rows: 1fr; }
+.tree-fold { min-height: 0; overflow: hidden; }
+
+/* 主干 + 每行的圆角肘线 */
+.tree-kids {
+  position: relative;
+  margin-left: 8px; padding-left: 18px;
+  padding-top: 2px; padding-bottom: 2px;
+}
+.tree-kids::before {
+  content: ''; position: absolute; left: 0;
+  top: 0; bottom: calc(var(--tree-row) / 2);
+  width: 1.5px; border-radius: 1px;
+  background: linear-gradient(to bottom, var(--tree-line) 0%, var(--tree-line) 62%, rgba(0,0,0,.05) 100%);
+  opacity: 0; transition: opacity .22s ease .1s;
+}
+.tree-section[data-open] > .tree-body .tree-kids::before,
+.tree-item[data-open] > .tree-kids::before { opacity: 1; }
+
+.tree-item { position: relative; }
+
+.tree-node {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 7px;
+  width: 100%; height: var(--tree-row);
+  padding: 0 8px 0 0;
+  border: 0; border-radius: 7px; background: none;
+  font: inherit; font-size: 13.5px; color: var(--text-2);
+  text-align: left; cursor: pointer;
+  transition: color .18s, background .18s;
+}
+.tree-node:hover { color: var(--text); background: rgba(0,0,0,.04); }
+.tree-node[data-active], .tree-item[data-active] > .tree-node {
+  color: var(--accent); font-weight: 600; background: rgba(10,132,255,.08);
+}
+
+/* 肘线：从主干弯到每行 */
+.tree-item > .tree-node::before,
+.tree-item > .tree-node::after { content: ''; position: absolute; pointer-events: none; }
+.tree-item > .tree-node::before {
+  left: -18px; top: 0; width: 14px; height: 50%;
+  border-left: 1.5px solid var(--tree-line);
+  border-bottom: 1.5px solid var(--tree-line);
+  border-bottom-left-radius: 9px;
+  opacity: 0; transition: opacity .22s ease .1s;
+}
+.tree-section[data-open] > .tree-body .tree-item > .tree-node::before,
+.tree-item[data-open] > .tree-kids .tree-item > .tree-node::before { opacity: 1; }
+.tree-item[data-active] > .tree-node::before {
+  border-color: var(--accent);
+}
+.tree-item[data-active] > .tree-node::after {
+  left: -5px; top: calc(50% - 2.5px);
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent);
+}
+
+.tn-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.tn-chev {
+  flex: 0 0 12px; width: 12px; height: 12px; position: relative;
+}
+.tn-chev::before {
+  content: ''; position: absolute; left: 2px; top: 3px;
+  width: 5px; height: 5px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg); transform-origin: 60% 60%;
+  transition: transform .26s var(--ease-out);
+}
+.tn-chev.on::before { transform: rotate(45deg); }
+.tn-dot {
+  flex: 0 0 12px; width: 12px; height: 12px; position: relative;
+}
+.tn-dot::before {
+  content: ''; position: absolute; left: 4px; top: 4px;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: currentColor; opacity: .45;
+}
+.tree-kids.nested {
+  margin-left: 8px; padding-left: 18px;
+}
+
+/* 桌面端：抽屉把内容推开（照片不被盖住），窄屏则浮层覆盖 */
+@media (min-width: 901px) {
+  main, .footer, .foot { transition: margin-left .35s var(--ease-out); }
+  body.menu-open main, body.menu-open .footer, body.menu-open .foot { margin-left: var(--panel-w); }
+}
+

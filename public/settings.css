@@ -1,0 +1,135 @@
+/* =========================================================
+   右上角设置按钮 + 面板（首页 / 看图页共用）
+   颜色取 theme.css 的 --set-* 变量
+   ========================================================= */
+
+/* ---------- 按钮 ---------- */
+.set-btn {
+  flex: 0 0 auto;
+  width: 38px; height: 38px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(20, 30, 45, .12);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, .72);
+  color: #4d6470;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color .22s, background .22s, color .22s, transform .3s var(--ease-out, cubic-bezier(.22,1,.36,1));
+}
+.set-btn svg { width: 18px; height: 18px; transition: transform .5s var(--ease-out, cubic-bezier(.22,1,.36,1)); }
+.set-btn:hover { border-color: rgba(20, 30, 45, .26); background: #fff; color: #22333d; }
+.set-btn:focus-visible { outline: 2px solid rgba(45, 124, 170, .5); outline-offset: 2px; }
+.set-btn.is-open { color: var(--set-accent, #2d7caa); border-color: rgba(45, 124, 170, .38); background: #fff; }
+.set-btn.is-open svg { transform: rotate(60deg); }
+
+/* ---------- 面板 ---------- */
+.set-panel {
+  position: fixed;
+  z-index: 900;
+  width: 322px;
+  padding: 16px 18px 10px;
+  border-radius: 18px;
+  background: var(--set-bg, rgba(255, 255, 255, .94));
+  border: 1px solid var(--set-border, rgba(20, 30, 45, .10));
+  box-shadow: 0 18px 48px rgba(16, 40, 60, .18), 0 2px 8px rgba(16, 40, 60, .06);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  color: var(--set-ink, #1d3038);
+  transform-origin: top right;
+  opacity: 0;
+  transform: translateY(-6px) scale(.97);
+  transition: opacity .16s ease, transform .22s var(--ease-out, cubic-bezier(.22,1,.36,1));
+}
+.set-panel.is-in { opacity: 1; transform: none; }
+.set-panel[hidden] { display: none !important; }
+
+.set-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 2px 0 12px;
+  font-size: 14.5px; font-weight: 700; letter-spacing: .2px;
+}
+.set-close {
+  width: 24px; height: 24px;
+  display: grid; place-items: center;
+  border: 0; border-radius: 7px; background: none;
+  color: var(--set-ink-2, #6b7f8a);
+  font-size: 12px; cursor: pointer;
+  transition: background .18s, color .18s;
+}
+.set-close:hover { background: var(--set-hover, rgba(20, 30, 45, .05)); color: var(--set-ink, #1d3038); }
+
+.set-group { padding: 15px 0 17px; border-top: 1px solid var(--set-border, rgba(20, 30, 45, .08)); }
+.set-label {
+  font-size: 13.5px; font-weight: 700;
+  color: var(--set-ink-2, #6b7f8a);
+  letter-spacing: .2px;
+  margin-bottom: 11px;
+}
+
+/* 两三个纯文字选项 */
+.set-options {
+  display: flex; gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: rgba(15, 25, 40, .06);
+}
+.set-options button {
+  flex: 1 1 0;
+  height: 42px;
+  border: 0; border-radius: 10px;
+  background: transparent;
+  color: var(--set-ink-2, #6b7f8a);
+  font: inherit; font-size: 13.5px; font-weight: 500;
+  cursor: pointer;
+  transition: background .2s, color .2s, box-shadow .2s;
+}
+.set-options button:hover { color: var(--set-ink, #1d3038); }
+.set-options button.is-on {
+  background: #fff;
+  color: var(--set-ink, #1d3038);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(16, 40, 60, .10), 0 3px 8px rgba(16, 40, 60, .07);
+}
+
+/* 背景色圆点 */
+.set-swatches { display: flex; gap: 10px; padding: 2px 1px; }
+.set-swatches button {
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(20, 30, 45, .10);
+  transition: box-shadow .2s, transform .25s var(--ease-out, cubic-bezier(.22,1,.36,1));
+}
+.set-swatches button i {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: block;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .7);
+}
+.set-swatches button:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(20, 30, 45, .26); }
+/* 纯白那个圆点在白面板上要看得出来 */
+.set-swatches button[data-val="white"] { box-shadow: 0 0 0 1px rgba(20, 30, 45, .22); }
+.set-swatches button[data-val="white"]:hover { box-shadow: 0 0 0 1px rgba(20, 30, 45, .40); }
+
+/* 选中：先留一圈白，再套一圈蓝（和设计图一致） */
+.set-swatches button.is-on {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--set-accent, #2d7caa);
+}
+.set-swatches button.is-on:hover { transform: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--set-accent, #2d7caa); }
+
+.set-foot {
+  padding: 10px 0 4px;
+  font-size: 11.5px;
+  color: #a6b3bb;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .set-btn { width: 34px; height: 34px; border-radius: 10px; }
+  .set-btn svg { width: 16px; height: 16px; }
+  .set-panel { width: min(322px, calc(100vw - 24px)); }
+}

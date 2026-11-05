@@ -1,0 +1,234 @@
+/* =========================================================
+   主题变量：背景色 4 套 + 卡片风格 3 套
+   prefs.js 会写到 <html data-bg="..." data-card="..."> 上。
+   这里只定义变量，具体组件在 series.css / soft-bg.css 里引用。
+   ========================================================= */
+:root {
+  /* ---- 背景（soft-bg.css 组装渐变用）---- */
+  --soft-top: #dcf0f7;
+  --soft-mid: #eef9fa;
+  --soft-bottom: #ffffff;
+  --glow-1: rgba(143, 207, 233, .50);
+  --glow-2: rgba(184, 229, 238, .52);
+  --irid-1: rgba(249, 236, 247, .42);
+  --irid-2: rgba(255, 249, 229, .34);
+  --sheen: rgba(255, 255, 255, .40);
+
+  /* ---- 卡片 ---- */
+  --card-bg: #ffffff;
+  --card-border: rgba(255, 255, 255, .95);
+  --card-border-w: 1px;
+  --card-shadow: 0 12px 34px rgba(30, 70, 95, .11), 0 2px 8px rgba(30, 70, 95, .05);
+  --card-shadow-hover: 0 22px 46px rgba(30, 70, 95, .18), 0 4px 12px rgba(30, 70, 95, .07);
+  --card-radius: 30px;
+  --card-blur: none;
+  --media-bg: linear-gradient(150deg, #e6f0f5, #f0f1f6 60%, #e9eef3);
+
+  /* ---- 设置面板 ---- */
+  --set-bg: rgba(255, 255, 255, .94);
+  --set-border: rgba(20, 30, 45, .10);
+  --set-ink: #1d3038;
+  --set-ink-2: #6b7f8a;
+  --set-accent: #2d7caa;
+  --set-hover: rgba(20, 30, 45, .05);
+  --set-active: rgba(45, 124, 170, .12);
+}
+
+/* ================= 背景色 ================= */
+html[data-bg="warm"] {
+  --soft-top: #f8e8d2;
+  --soft-mid: #fdf6ea;
+  --soft-bottom: #fffdf8;
+  --glow-1: rgba(240, 190, 140, .42);
+  --glow-2: rgba(248, 214, 170, .46);
+  --irid-1: rgba(255, 240, 225, .50);
+  --irid-2: rgba(250, 240, 210, .34);
+}
+
+html[data-bg="gray"] {
+  --soft-top: #e8ecf2;
+  --soft-mid: #f3f5f8;
+  --soft-bottom: #ffffff;
+  --glow-1: rgba(170, 185, 205, .40);
+  --glow-2: rgba(200, 210, 225, .44);
+  --irid-1: rgba(240, 242, 248, .50);
+  --irid-2: rgba(235, 238, 245, .34);
+}
+
+html[data-bg="rose"] {
+  --soft-top: #f7e3e8;
+  --soft-mid: #fdf2f5;
+  --soft-bottom: #fffafb;
+  --glow-1: rgba(238, 170, 190, .40);
+  --glow-2: rgba(247, 200, 214, .44);
+  --irid-1: rgba(255, 238, 245, .50);
+  --irid-2: rgba(255, 244, 230, .30);
+}
+
+/* ================= 纯白 ================= */
+html[data-bg="white"] {
+  --soft-top: #ffffff;
+  --soft-mid: #fcfcfd;
+  --soft-bottom: #ffffff;
+  --glow-1: transparent;
+  --glow-2: transparent;
+  --irid-1: transparent;
+  --irid-2: transparent;
+  --sheen: transparent;
+  /* 白底白卡要靠阴影和细边分开 */
+  --card-border: rgba(20, 30, 45, .09);
+  --card-shadow: 0 10px 30px rgba(16, 36, 56, .10), 0 1px 3px rgba(16, 36, 56, .05);
+  --card-shadow-hover: 0 20px 44px rgba(16, 36, 56, .16), 0 4px 10px rgba(16, 36, 56, .07);
+}
+
+/* 纯白下不要那几团装饰光斑，要不就不是纯白了 */
+html[data-bg="white"] .bg,
+html[data-bg="white"] .orb { display: none; }
+/* 夜间把光斑压暗一点，别抢画面 */
+html[data-bg="night"] .orb { opacity: .35; }
+
+/* ================= 夜间（不是纯黑） ================= */
+html[data-bg="night"] {
+  --soft-top: #262a33;
+  --soft-mid: #1c1f26;
+  --soft-bottom: #14161b;
+  --glow-1: rgba(96, 120, 180, .16);
+  --glow-2: rgba(70, 96, 150, .14);
+  --irid-1: rgba(70, 60, 90, .16);
+  --irid-2: rgba(90, 75, 60, .10);
+  --sheen: rgba(255, 255, 255, .035);
+
+  --text: #e9ebef;
+  --text-2: #98a1ac;
+  --accent: #74b6e6;
+
+  --page-ink: #e9ebef;
+  --page-ink-2: #98a1ac;
+  --page-ink-3: #828b96;
+  --page-line: rgba(255, 255, 255, .12);
+  --bg: #14161b;
+  --surface: #1e2128;
+
+  --card-bg: rgba(40, 45, 54, .86);
+  --card-border: rgba(255, 255, 255, .10);
+  --card-shadow: 0 14px 36px rgba(0, 0, 0, .42);
+  --card-shadow-hover: 0 24px 52px rgba(0, 0, 0, .55);
+  --media-bg: linear-gradient(150deg, #2b3038, #22262d);
+
+  --set-bg: rgba(38, 42, 50, .95);
+  --set-border: rgba(255, 255, 255, .10);
+  --set-ink: #e9ebef;
+  --set-ink-2: #98a1ac;
+  --set-hover: rgba(255, 255, 255, .07);
+  --set-active: rgba(116, 182, 230, .20);
+}
+
+/* ---- 夜间：组件里写死的浅色单独翻一下 ---- */
+html[data-bg="night"] .pc-name { color: #f1f3f6; }
+html[data-bg="night"] .pc-desc { color: #98a1ac; }
+html[data-bg="night"] .pc-stat { color: #d5dae1; }
+html[data-bg="night"] .pc-stat svg { stroke: #8b95a0; }
+
+html[data-bg="night"] .filter {
+  background: rgba(255, 255, 255, .07);
+  border-color: rgba(255, 255, 255, .12);
+}
+html[data-bg="night"] .filter:focus-within {
+  background: rgba(255, 255, 255, .10);
+  border-color: rgba(90, 160, 220, .55);
+}
+html[data-bg="night"] .filter input { color: #e9ebef; }
+html[data-bg="night"] .filter input::placeholder { color: #6d7681; }
+html[data-bg="night"] .brand-mark {
+  background: linear-gradient(145deg, rgba(255, 255, 255, .10), rgba(120, 150, 190, .10));
+  border-color: rgba(255, 255, 255, .12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12);
+}
+
+/* Flow 按钮：暗底上反成白描边白字，hover 时白圆黑字 */
+html[data-bg="night"] .pc-follow { border-color: rgba(255, 255, 255, .38); color: #eef1f4; }
+html[data-bg="night"] .pc-follow .fb-arrow { stroke: #eef1f4; }
+html[data-bg="night"] .pc-follow .fb-circle { background: #f2f5f8; }
+html[data-bg="night"] .pc-follow:hover,
+html[data-bg="night"] .pc-follow:focus-visible { color: #14161b; }
+html[data-bg="night"] .pc-follow:hover .fb-arrow,
+html[data-bg="night"] .pc-follow:focus-visible .fb-arrow { stroke: #14161b; }
+
+/* 看图页 */
+html[data-bg="night"] select {
+  background-color: #1e2128;
+  border-color: rgba(255, 255, 255, .14);
+  color: #e9ebef;
+}
+html[data-bg="night"] select option { background: #1e2128; color: #e9ebef; }
+html[data-bg="night"] .toolbar { background: rgba(20, 22, 27, .74); }
+html[data-bg="night"] .section-head { border-bottom-color: rgba(255, 255, 255, .08); }
+html[data-bg="night"] .section-count { background: rgba(255, 255, 255, .08); }
+html[data-bg="night"] .load-more { border-color: rgba(255, 255, 255, .16); color: #c7ced6; }
+html[data-bg="night"] .load-more:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+html[data-bg="night"] .load-more:disabled { border-color: rgba(255, 255, 255, .10); }
+html[data-bg="night"] .tile { background: #262a32; }
+html[data-bg="night"] .tile:hover { box-shadow: 0 12px 32px rgba(0, 0, 0, .5); }
+
+/* 抽屉 / 设置 / 分段 */
+html[data-bg="night"] .menu-toggle {
+  background: rgba(255, 255, 255, .08);
+  border-color: rgba(255, 255, 255, .14);
+  color: #dfe3e8;
+}
+html[data-bg="night"] .menu-toggle:hover { background: rgba(255, 255, 255, .12); }
+html[data-bg="night"] .menu-panel {
+  background: #1e2128;
+  border-right-color: rgba(255, 255, 255, .08);
+  box-shadow: 18px 0 48px rgba(0, 0, 0, .45);
+}
+html[data-bg="night"] .set-btn {
+  background: rgba(255, 255, 255, .08);
+  border-color: rgba(255, 255, 255, .14);
+  color: #dfe3e8;
+}
+html[data-bg="night"] .set-btn:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+html[data-bg="night"] .set-btn.is-open { background: rgba(255, 255, 255, .14); }
+html[data-bg="night"] .set-options { background: rgba(255, 255, 255, .07); }
+html[data-bg="night"] .set-options button.is-on {
+  background: rgba(255, 255, 255, .14);
+  color: #f0f2f5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .30);
+}
+html[data-bg="night"] .set-swatches button.is-on {
+  box-shadow: 0 0 0 2px #1e2128, 0 0 0 4px var(--accent);
+}
+html[data-bg="night"] .crumb-home {
+  background: rgba(90, 160, 220, .18);
+  border-color: rgba(120, 180, 230, .35);
+  color: #8ecdf5;
+}
+html[data-bg="night"] .seg { background: rgba(255, 255, 255, .10); }
+html[data-bg="night"] .seg-thumb {
+  background: rgba(255, 255, 255, .16);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .30);
+}
+html[data-bg="night"] .seg-item.is-current { color: #f2f4f7; }
+
+/* ================= 卡片风格 ================= */
+html[data-card="glass"] {
+  --card-bg: rgba(255, 255, 255, .30);
+  /* 5px 白边 = 设计图里那圈玻璃外框，图片正好嵌在里面 */
+  --card-border-w: 5px;
+  --card-border: rgba(255, 255, 255, .60);
+  --card-shadow: 0 16px 40px rgba(30, 70, 95, .12), inset 0 1px 0 rgba(255, 255, 255, .90);
+  --card-shadow-hover: 0 24px 52px rgba(30, 70, 95, .18), inset 0 1px 0 rgba(255, 255, 255, .95);
+  --card-blur: blur(16px) saturate(1.1);
+  --media-bg: linear-gradient(150deg, rgba(230, 240, 245, .80), rgba(240, 241, 246, .60));
+}
+
+html[data-card="line"] {
+  --card-bg: transparent;
+  --card-border: rgba(29, 48, 56, .16);
+  --card-border-w: 1.5px;
+  --card-shadow: none;
+  --card-shadow-hover: 0 10px 26px rgba(30, 70, 95, .10);
+  --media-bg: linear-gradient(150deg, rgba(230, 240, 245, .55), rgba(240, 241, 246, .45));
+}
+
+/* 深色背景下（以后加夜间主题时）面板也跟着变深，这里先留好变量入口 */

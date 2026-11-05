@@ -1,0 +1,7 @@
+# 统一换行符，避免 Windows / macOS 提交时互相打架
+* text=auto eol=lf
+*.bat text eol=crlf
+*.jpg binary
+*.png binary
+*.webp binary
+*.zip binary

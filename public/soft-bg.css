@@ -1,0 +1,24 @@
+/* 全站共用背景：参考图的「上部淡青蓝珠光 → 下部纯白」柔和渐变。
+   颜色全部走 theme.css 的变量（换背景色只改变量，不动这里）。
+   只负责背景层，不碰任何组件配色；后于各页面样式加载即可覆盖 body 底色。 */
+html { min-height: 100%; }
+body {
+  background-color: var(--soft-bottom, #ffffff);
+  background-image:
+    /* 左上角那抹稍深的色 */
+    radial-gradient(ellipse 62% 44% at 8% -2%, var(--glow-1, rgba(143, 207, 233, .50)), transparent 72%),
+    /* 右上角的淡光 */
+    radial-gradient(ellipse 56% 40% at 88% 4%, var(--glow-2, rgba(184, 229, 238, .52)), transparent 74%),
+    /* 中部虹彩：极淡的粉与奶白 */
+    radial-gradient(ellipse 78% 48% at 40% 28%, var(--irid-1, rgba(249, 236, 247, .42)), transparent 78%),
+    radial-gradient(ellipse 58% 36% at 76% 24%, var(--irid-2, rgba(255, 249, 229, .34)), transparent 76%),
+    /* 一道很轻的斜向珠光 */
+    linear-gradient(118deg, transparent 26%, var(--sheen, rgba(255, 255, 255, .40)) 46%, transparent 66%),
+    /* 主体：上色 → 白 */
+    linear-gradient(180deg,
+      var(--soft-top, #dcf0f7) 0%,
+      var(--soft-mid, #eef9fa) 46%,
+      var(--soft-bottom, #ffffff) 86%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}

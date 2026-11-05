@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>抽屉</title>
+<script>fetch('/api/meta').then(r=>r.json()).then(m=>{if(m&&m.name)document.title=m.name;}).catch(()=>{});</script>
+<link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/nav.css">
+<link rel="stylesheet" href="/masonry.css">
+<link rel="stylesheet" href="/view.css">
+<link rel="stylesheet" href="/soft-bg.css">
+<link rel="stylesheet" href="/settings.css">
+<script src="/prefs.js"></script>
+</head>
+<body>
+<header class="toolbar">
+  <div class="toolbar-inner">
+    <!-- 「+ 目录」按钮由 nav.js 注入到 .toolbar-inner 最前 -->
+
+    <div class="brand">
+      <a class="back-series" id="backSeries" href="/" title="返回">← 返回</a>
+      <span class="brand-dot"></span>
+      <h1>浏览照片</h1>
+      <span class="count" id="count">0 张</span>
+    </div>
+
+    <div class="controls">
+      <input type="search" id="search" placeholder="搜索照片名称…" autocomplete="off">
+      <select id="sort">
+        <option value="seq">顺序 · 按文件夹</option>
+        <option value="time-desc">时间 · 新→旧</option>
+        <option value="time-asc">时间 · 旧→新</option>
+        <option value="name-asc">名称 · A→Z</option>
+        <option value="size-desc">大小 · 大→小</option>
+      </select>
+    </div>
+  </div>
+  <div class="crumbs" id="crumbs"></div>
+</header>
+
+<!-- 抽屉（prelayers / 面板 / 目录树）由 nav.js 统一创建，两页共用 -->
+
+<main id="main">
+  <div id="grid"></div>
+  <div id="empty" class="empty hidden">没有匹配的照片</div>
+</main>
+
+<!-- 灯箱 -->
+<div id="lightbox" class="lightbox hidden">
+  <button class="lb-close" id="lbClose" title="关闭 (Esc)">✕</button>
+  <button class="lb-nav lb-prev" id="lbPrev" title="上一张 (←)">‹</button>
+  <button class="lb-nav lb-next" id="lbNext" title="下一张 (→)">›</button>
+  <figure class="lb-stage">
+    <img id="lbImg" alt="">
+    <figcaption id="lbCap"></figcaption>
+  </figure>
+</div>
+
+<footer class="footer" id="footer"></footer>
+<script src="/masonry.js"></script>
+<script src="/nav.js"></script>
+<script src="/settings.js"></script>
+<script src="/view.js"></script>
+</body>
+</html>

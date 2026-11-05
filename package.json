@@ -1,0 +1,13 @@
+{
+  "name": "photo-drawer",
+  "version": "1.0.0",
+  "description": "自己电脑上的照片墙：不导入、不上传，指个文件夹就能看",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.35.5"
+  }
+}
